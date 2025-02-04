@@ -1,0 +1,60 @@
+[{
+  "_id": {
+    "$oid": "674743f63838937bbf96bf68"
+  },
+  "name": "Anna Williams",
+  "email": "anna.williams@example.com",
+  "password": "hashedpassword123",
+  "position": "Nurse",
+  "department": "Emergency",
+  "phone": "123-555-6789",
+  "createdAt": "2024-11-27T12:51:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743f63838937bbf96bf69"
+  },
+  "name": "David Miller",
+  "email": "david.miller@example.com",
+  "password": "hashedpassword456",
+  "position": "Receptionist",
+  "department": "Front Desk",
+  "phone": "234-555-7890",
+  "createdAt": "2024-11-27T12:52:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743f63838937bbf96bf6a"
+  },
+  "name": "Sophia Johnson",
+  "email": "sophia.johnson@example.com",
+  "password": "hashedpassword789",
+  "position": "Lab Technician",
+  "department": "Laboratory",
+  "phone": "345-555-8901",
+  "createdAt": "2024-11-27T12:53:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743f63838937bbf96bf6b"
+  },
+  "name": "Liam Brown",
+  "email": "liam.brown@example.com",
+  "password": "hashedpassword101",
+  "position": "Pharmacist",
+  "department": "Pharmacy",
+  "phone": "456-555-9012",
+  "createdAt": "2024-11-27T12:54:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743f63838937bbf96bf6c"
+  },
+  "name": "Olivia Davis",
+  "email": "olivia.davis@example.com",
+  "password": "hashedpassword202",
+  "position": "Administrator",
+  "department": "Administration",
+  "phone": "567-555-0123",
+  "createdAt": "2024-11-27T12:55:00.000Z"
+}]

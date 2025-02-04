@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>All Appointments</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Patient Name</th>
+        <th>Doctor Name</th>
+        <th>Specialty</th>
+        <th>Appointment Date</th>
+        <th>Diagnosis</th>
+        <th>Prescription Details</th>
+        <th>Consultation Fees</th>
+      </tr>
+    </thead>
+    <tbody id="appointments-list"></tbody>
+  </table>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const response = await fetch('/api/appointments');
+      const appointments = await response.json();
+      const appointmentsList = document.getElementById('appointments-list');
+
+      appointments.forEach(appointment => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${appointment.patient.name}</td>
+          <td>${appointment.doctor.name}</td>
+          <td>${appointment.doctor.specialty}</td>
+          <td>${new Date(appointment.appointmentDate).toLocaleDateString()}</td>
+          <td>${appointment.diagnosis}</td>
+          <td>${appointment.prescription.map(p => `${p.medicine.name} (Quantity: ${p.quantity})`).join(', ')}</td>
+          <td>${appointment.consultationFees}</td>
+        `;
+        appointmentsList.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>

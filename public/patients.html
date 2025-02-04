@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Patients</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Patients List</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Date of Birth</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Medical History</th>
+      </tr>
+    </thead>
+    <tbody id="patients-list"></tbody>
+  </table>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const response = await fetch('/api/patients');
+      const patients = await response.json();
+      const patientsList = document.getElementById('patients-list');
+
+      patients.forEach(patient => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${patient.name}</td>
+          <td>${patient.email}</td>
+          <td>${new Date(patient.dateOfBirth).toLocaleDateString()}</td>
+          <td>${patient.phone}</td>
+          <td>${patient.address}</td>
+          <td>${patient.medicalHistory.join(', ')}</td>
+        `;
+        patientsList.appendChild(row);
+      });
+    });
+
+  </script>
+</body>
+</html>

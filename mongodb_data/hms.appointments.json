@@ -1,0 +1,237 @@
+[{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e54"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf61"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "appointmentDate": "2024-12-05T10:00:00.000Z",
+  "diagnosis": "Asthma check-up",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf55"
+      },
+      "quantity": 20
+    },
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf58"
+      },
+      "quantity": 15
+    }
+  ],
+  "consultationFees": 100,
+  "createdAt": "2024-11-27T12:50:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e55"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf62"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "appointmentDate": "2024-12-06T11:30:00.000Z",
+  "diagnosis": "Diabetes management",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5b"
+      },
+      "quantity": 30
+    },
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5d"
+      },
+      "quantity": 25
+    }
+  ],
+  "consultationFees": 120,
+  "createdAt": "2024-11-27T12:52:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e56"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf63"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "appointmentDate": "2024-12-07T14:00:00.000Z",
+  "diagnosis": "Seasonal allergies check-up",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5a"
+      },
+      "quantity": 30
+    }
+  ],
+  "consultationFees": 90,
+  "createdAt": "2024-11-27T12:54:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e57"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf64"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "appointmentDate": "2024-12-08T09:30:00.000Z",
+  "diagnosis": "Heart disease follow-up",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf57"
+      },
+      "quantity": 15
+    },
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5d"
+      },
+      "quantity": 20
+    }
+  ],
+  "consultationFees": 150,
+  "createdAt": "2024-11-27T12:56:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e58"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf65"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "appointmentDate": "2024-12-09T16:00:00.000Z",
+  "diagnosis": "Migraine management",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5c"
+      },
+      "quantity": 25
+    },
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5b"
+      },
+      "quantity": 20
+    }
+  ],
+  "consultationFees": 110,
+  "createdAt": "2024-11-27T12:58:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e59"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf61"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "appointmentDate": "2024-12-10T13:00:00.000Z",
+  "diagnosis": "Blood pressure check",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5d"
+      },
+      "quantity": 30
+    }
+  ],
+  "consultationFees": 85,
+  "createdAt": "2024-11-27T13:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e5a"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf62"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "appointmentDate": "2024-12-11T14:30:00.000Z",
+  "diagnosis": "High blood pressure follow-up",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5d"
+      },
+      "quantity": 25
+    },
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf57"
+      },
+      "quantity": 15
+    }
+  ],
+  "consultationFees": 125,
+  "createdAt": "2024-11-27T13:02:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e5b"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf63"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "appointmentDate": "2024-12-12T10:00:00.000Z",
+  "diagnosis": "Allergy testing",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf5c"
+      },
+      "quantity": 20
+    }
+  ],
+  "consultationFees": 95,
+  "createdAt": "2024-11-27T13:04:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddb4b584f348ce2b51e5c"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf64"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "appointmentDate": "2024-12-13T11:00:00.000Z",
+  "diagnosis": "Cholesterol check-up",
+  "prescription": [
+    {
+      "medicine": {
+        "$oid": "674743ad3838937bbf96bf57"
+      },
+      "quantity": 25
+    }
+  ],
+  "consultationFees": 140,
+  "createdAt": "2024-11-27T13:06:00.000Z"
+}]

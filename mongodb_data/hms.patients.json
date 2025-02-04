@@ -1,0 +1,80 @@
+[{
+  "_id": {
+    "$oid": "674743d83838937bbf96bf61"
+  },
+  "name": "Jane Doe",
+  "email": "a@gmail.com",
+  "password": "aaa",
+  "dateOfBirth": {
+    "$date": "1985-06-15T00:00:00.000Z"
+  },
+  "phone": "123-555-7899",
+  "address": "123 Elm St, Springfield, IL",
+  "medicalHistory": [
+    "Asthma",
+    "High blood pressure"
+  ],
+  "createdAt": "2024-11-27T12:46:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743d83838937bbf96bf62"
+  },
+  "name": "John Smith",
+  "email": "johnsmith@example.com",
+  "password": "hashedpassword456",
+  "dateOfBirth": "1990-03-25T00:00:00.000Z",
+  "phone": "234-555-8901",
+  "address": "456 Oak St, Rivertown, TX",
+  "medicalHistory": [
+    "Diabetes"
+  ],
+  "createdAt": "2024-11-27T12:47:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743d83838937bbf96bf63"
+  },
+  "name": "Emily Johnson",
+  "email": "emilyj@example.com",
+  "password": "hashedpassword789",
+  "dateOfBirth": "2000-11-30T00:00:00.000Z",
+  "phone": "345-555-9012",
+  "address": "789 Pine St, Lakeside, CA",
+  "medicalHistory": [
+    "Seasonal allergies"
+  ],
+  "createdAt": "2024-11-27T12:48:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743d83838937bbf96bf64"
+  },
+  "name": "Michael Brown",
+  "email": "michaelb@example.com",
+  "password": "hashedpassword101",
+  "dateOfBirth": "1978-09-05T00:00:00.000Z",
+  "phone": "456-555-0123",
+  "address": "101 Maple St, Greenfield, OH",
+  "medicalHistory": [
+    "Heart disease",
+    "Cholesterol issues"
+  ],
+  "createdAt": "2024-11-27T12:49:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743d83838937bbf96bf65"
+  },
+  "name": "Sarah Lee",
+  "email": "sarahlee@example.com",
+  "password": "hashedpassword202",
+  "dateOfBirth": "1995-12-12T00:00:00.000Z",
+  "phone": "567-555-1234",
+  "address": "202 Birch St, Maplewood, NJ",
+  "medicalHistory": [
+    "Migraines",
+    "Anxiety"
+  ],
+  "createdAt": "2024-11-27T12:50:00.000Z"
+}]

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container mt-4">
+    <h1>Doctor Details</h1>
+    <div id="doctor-details"></div>
+    <button id="edit-button" class="btn btn-warning" onclick="editDoctorDetails()">Edit Details</button>
+    <div id="edit-doctor-details" style="display: none;">
+      <h2>Edit Doctor Details</h2>
+      <form id="edit-doctor-form">
+        <div class="mb-3">
+          <label for="edit-name">Name:</label>
+          <input type="text" id="edit-name" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="edit-specialty">Specialty:</label>
+          <input type="text" id="edit-specialty" name="specialty" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="edit-email">Email:</label>
+          <input type="email" id="edit-email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="edit-phone">Phone:</label>
+          <input type="tel" id="edit-phone" name="phone" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <h2 class="mt-4">Appointments</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Appointment Date</th>
+          <th>Diagnosis</th>
+          <th>Prescription</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="appointments-list"></tbody>
+    </table>
+
+    <div id="edit-appointment-details" style="display: none;">
+      <h2>Edit Appointment Details</h2>
+      <form id="edit-appointment-form">
+        <div class="mb-3">
+          <label for="edit-diagnosis">Diagnosis:</label>
+          <input type="text" id="edit-diagnosis" name="diagnosis" class="form-control" required>
+        </div>
+        <!-- Inside the "Edit Appointment" form -->
+
+        <div class="mb-3">
+          <label for="edit-prescription">Prescription:</label>
+          <div id="medicine-list">
+            <div class="medicine-item">
+              <select class="form-control medicine-select" name="medicine[]">
+                <option value="">Select Medicine</option>
+                <!-- Medicines will be dynamically populated here -->
+              </select>
+              <input type="number" name="quantity[]" class="form-control" placeholder="Quantity" min="1" />
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="addMedicineField()">Add Medicine</button>
+        </div>
+
+        <div class="mb-3">
+          <!-- Dynamically pass appointmentId here -->
+          <button type="button" class="btn btn-primary" id="save-btn">Save Changes</button>
+          <button type="button" class="btn btn-secondary" onclick="cancelAppointmentEdit()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const doctorId = window.location.pathname.split('/').pop();
+
+      if (doctorId) {
+        try {
+          // Fetch doctor details
+          const doctorResponse = await fetch(`/api/doctors/${doctorId}`);
+          const doctor = await doctorResponse.json();
+
+          if (!doctor) {
+            document.getElementById('doctor-details').innerHTML = `<p>Doctor not found.</p>`;
+            return;
+          }
+
+          displayDoctorDetails(doctor);
+
+          // Fetch and display appointments
+          fetchAppointments(doctorId);
+
+        } catch (error) {
+          document.getElementById('doctor-details').innerHTML = `<p>Error fetching doctor details.</p>`;
+          console.error('Error:', error);  // Debug log
+        }
+      } else {
+        document.getElementById('doctor-details').innerHTML = `<p>Doctor ID not provided in URL.</p>`;
+      }
+    });
+
+    function displayDoctorDetails(doctor) {
+      const detailsDiv = document.getElementById('doctor-details');
+      detailsDiv.innerHTML = `
+        <p>Name: ${doctor.name}</p>
+        <p>Specialty: ${doctor.specialty}</p>
+        <p>Email: ${doctor.email}</p>
+        <p>Phone: ${doctor.phone}</p>
+      `;
+    }
+
+    function editDoctorDetails() {
+      const doctorId = window.location.pathname.split('/').pop();
+      document.getElementById('edit-doctor-details').style.display = 'block';
+      fetch(`/api/doctors/${doctorId}`)
+        .then(response => response.json())
+        .then(doctor => {
+          document.getElementById('edit-name').value = doctor.name;
+          document.getElementById('edit-specialty').value = doctor.specialty;
+          document.getElementById('edit-email').value = doctor.email;
+          document.getElementById('edit-phone').value = doctor.phone;
+        });
+    }
+
+    document.getElementById('edit-doctor-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const doctorId = window.location.pathname.split('/').pop();
+      const formData = new FormData(event.target);
+      const updatedData = {
+        name: formData.get('name'),
+        specialty: formData.get('specialty'),
+        email: formData.get('email'),
+        phone: formData.get('phone')
+      };
+
+      try {
+        await fetch(`/api/doctors/${doctorId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedData)
+        });
+        document.getElementById('edit-doctor-details').style.display = 'none';
+        displayDoctorDetails(updatedData);
+      } catch (error) {
+        console.error('Error updating doctor details:', error);
+      }
+    });
+
+    function cancelEdit() {
+      document.getElementById('edit-doctor-details').style.display = 'none';
+    }
+
+    async function fetchAppointments(doctorId) {
+      try {
+        const appointmentsResponse = await fetch(`/api/doctors/${doctorId}/appointments`);
+        const appointments = await appointmentsResponse.json();
+        const appointmentsList = document.getElementById('appointments-list');
+        appointmentsList.innerHTML = ''; // Clear the list
+        appointments.filter(appointment => appointment.doctor._id === doctorId).forEach(appointment => {
+          const prescriptionDetails = appointment.prescription.map(p => `${p.medicine.name} (Quantity: ${p.quantity})`).join(', ');
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${appointment.patient.name}</td>
+            <td>${new Date(appointment.appointmentDate).toLocaleDateString()}</td>
+            <td>${appointment.diagnosis}</td>
+            <td>${prescriptionDetails}</td>
+            <td>
+              <button class="btn btn-warning" onclick="editAppointment('${appointment._id}')">Edit</button>
+              ${appointment.diagnosis || appointment.prescription.length > 0 ? '' : `<button class="btn btn-danger" onclick="deleteAppointment('${appointment._id}')">Delete</button>`}
+            </td>
+          `;
+          appointmentsList.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    }
+
+    let medicinesList = [];  // This will store the list of medicines
+
+    // Fetch medicines from the backend and store them in the medicinesList
+    async function fetchMedicines() {
+      try {
+        const response = await fetch('/api/medicines');
+        medicinesList = await response.json();
+      } catch (error) {
+        console.error('Error fetching medicines:', error);
+      }
+    }
+
+    // Populate medicine options in a dropdown
+    function populateMedicinesInField(selectElement, selectedMedicineId = null) {
+      // Clear any existing options
+      selectElement.innerHTML = '<option value="">Select Medicine</option>';
+
+      medicinesList.forEach(medicine => {
+        const option = document.createElement('option');
+        option.value = medicine._id;
+        option.textContent = medicine.name;
+        selectElement.appendChild(option);
+
+        // Set the selected medicine if available
+        if (selectedMedicineId && medicine._id === selectedMedicineId) {
+          option.selected = true;
+        }
+      });
+    }
+
+    // Update the editAppointment function
+    function editAppointment(appointmentId) {
+      document.getElementById('edit-appointment-details').style.display = 'block';
+
+      fetch(`/api/appointments/${appointmentId}`)
+        .then(response => response.json())
+        .then(appointment => {
+          document.getElementById('edit-diagnosis').value = appointment.diagnosis;
+
+          // Fetch medicines list only if not fetched yet
+          if (medicinesList.length === 0) {
+            fetchMedicines();
+          }
+
+          // Clear the prescription container
+          const prescriptionContainer = document.getElementById('medicine-list');
+          prescriptionContainer.innerHTML = '';  // Clear existing fields
+
+          // Loop through existing prescription items and create dropdowns for each medicine
+          appointment.prescription.forEach((prescriptionItem, index) => {
+            const medicineField = document.createElement('div');
+            medicineField.classList.add('medicine-item');
+            medicineField.innerHTML = `
+              <select class="form-control medicine-select" name="medicine[]" data-index="${index}">
+                <option value="">Select Medicine</option>
+                <!-- Medicines will be populated here -->
+              </select>
+              <input type="number" class="form-control" name="quantity[]" placeholder="Quantity" min="1" value="${prescriptionItem.quantity}" />
+              <button type="button" class="btn btn-danger btn-sm" onclick="removeMedicineField(this)">Delete Medicine</button>
+            `;
+
+            prescriptionContainer.appendChild(medicineField);
+
+            // Populate medicines dropdown
+            populateMedicinesInField(medicineField.querySelector('.medicine-select'), prescriptionItem.medicine._id);
+          });
+          const saveBtn = document.querySelector('#edit-appointment-form .btn-primary');
+                saveBtn.onclick = () => saveAppointmentChanges(appointmentId);
+        });
+    }
+
+    // Add new medicine field
+    function addMedicineField() {
+      const medicineList = document.getElementById('medicine-list');
+      const newMedicineField = document.createElement('div');
+      newMedicineField.classList.add('medicine-item');
+
+      newMedicineField.innerHTML = `
+        <select class="form-control medicine-select" name="medicine[]">
+          <option value="">Select Medicine</option>
+          <!-- Medicines will be populated here -->
+        </select>
+        <input type="number" name="quantity[]" class="form-control" placeholder="Quantity" min="1" />
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeMedicineField(this)">Delete Medicine</button>
+      `;
+
+      medicineList.appendChild(newMedicineField);
+
+      // Re-populate the medicines dropdown after adding a new field
+      populateMedicinesInField(newMedicineField.querySelector('.medicine-select'));
+    }
+
+    // Remove medicine field
+    function removeMedicineField(button) {
+      const medicineItem = button.closest('.medicine-item');
+      medicineItem.remove();
+    }
+
+    async function saveAppointmentChanges(appointmentId) {
+      const diagnosis = document.getElementById('edit-diagnosis').value;
+      const medicineElements = document.querySelectorAll('.medicine-select');
+      const quantityElements = document.querySelectorAll('input[name="quantity[]"]');
+
+      // Collect prescription data as an array of objects
+      const prescription = [];
+      medicineElements.forEach((medicineSelect, index) => {
+        const medicineId = medicineSelect.value;
+        const quantity = quantityElements[index].value;
+
+        if (medicineId && quantity && !isNaN(quantity) && quantity > 0) {
+          prescription.push({
+            medicine: medicineId,
+            quantity: parseInt(quantity)  // Ensure quantity is an integer
+          });
+        } else {
+          console.error(`Invalid data at index ${index}: medicineId: ${medicineId}, quantity: ${quantity}`);
+        }
+      });
+
+      // Check that the diagnosis and prescription are valid
+      if (!diagnosis || prescription.length === 0) {
+        console.error('Diagnosis or prescription is missing or invalid.');
+        return;  // Don't send the request if data is incomplete
+      }
+
+      // Prepare the updated appointment data
+      const updatedAppointment = {
+        diagnosis,
+        prescription  // This should be an array of objects, not separate arrays
+      };
+      console.log(appointmentId, updatedAppointment);
+      // Send PUT request with updated appointment data in the request body
+      try {
+        const response = await fetch(`/api/appointments/${appointmentId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'  // Ensure the request body is JSON
+          },
+          body: JSON.stringify(updatedAppointment)  // Send the request body as JSON
+        });
+
+        if (response.ok) {
+      const updatedData = await response.json();
+      console.log('Updated appointment:', updatedData);
+      // Create the bill after successfully updating the appointment
+      const billData = {
+        appointment: updatedData._id,
+        patient: updatedData.patient._id, // Assuming the patient ID is available in the response
+        doctor: updatedData.doctor._id    // Assuming the doctor ID is available in the response
+      };
+
+      // Post the bill
+      const billResponse = await fetch('/api/bills', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(billData)
+      });
+
+      if (billResponse.ok) {
+        const bill = await billResponse.json();
+        console.log('Bill created successfully:', bill);
+      } else {
+        const billError = await billResponse.json();
+        console.error('Error creating bill:', billError);
+      }
+      // Optionally, reload the appointments list after saving
+      const doctorId = updatedData.doctor._id;  // Assuming the doctorId is available in the response
+      fetchAppointments(doctorId);  // Reload the appointments for this doctor
+      // Clear the form after successful save
+      cancelAppointmentEdit();
+    } else {
+      const errorData = await response.json();
+      console.error('Error saving appointment:', errorData);
+    }
+      } catch (error) {
+        console.error('Error saving appointment:', error);
+      }
+    }
+
+
+
+
+    // Cancel edit appointment
+    function cancelAppointmentEdit() {
+      document.getElementById('edit-appointment-details').style.display = 'none';
+    }
+
+
+    async function deleteAppointment(appointmentId) {
+      try {
+        await fetch(`/api/appointments/${appointmentId}`, {
+          method: 'DELETE'
+        });
+        fetchAppointments(window.location.pathname.split('/').pop());
+      } catch (error) {
+        console.error('Error deleting appointment:', error);
+      }
+    }
+  </script>
+</body>
+</html>

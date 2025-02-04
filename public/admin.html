@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Admin Dashboard</h1>
+    <div id="adminDetails" class="mb-4">
+      <h3>Your Details</h3>
+      <p><strong>Name:</strong> <span id="adminName"></span></p>
+      <p><strong>Email:</strong> <span id="adminEmail"></span></p>
+      <p><strong>Role:</strong> <span id="adminRole"></span></p>
+      <button class="btn btn-primary" onclick="editAdminDetails()">Edit Details</button>
+    </div>
+
+    <h3>Manage Entities</h3>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#staffs">Staff</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#patients">Patients</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#doctors">Doctors</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#appointments">Appointments</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#rooms">Rooms</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#medicines">Medicines</a>
+      </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+      <!-- Staff Management -->
+      <div id="staffs" class="tab-pane fade show active">
+        <h4>Staff</h4>
+        <button class="btn btn-success mb-3" onclick="addEntity('staff')">Add Staff</button>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="staffTableBody"></tbody>
+        </table>
+        <div id="editStaffFormContainer" style="display: none;">
+          <h3>Edit Staff</h3>
+          <form id="editStaffForm">
+            <input type="hidden" id="editStaffId">
+
+            <div class="form-group">
+              <label for="editStaffName">Name</label>
+              <input type="text" id="editStaffName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editStaffEmail">Email</label>
+              <input type="email" id="editStaffEmail" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editStaffPhone">Phone</label>
+              <input type="tel" id="editStaffPhone" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editStaffPosition">Position</label>
+              <input type="text" id="editStaffPosition" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editStaffDepartment">Department</label>
+              <input type="text" id="editStaffDepartment" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" id="cancelStaffEdit" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
+        <div id="addStaffFormContainer" style="display:none;">
+          <h3>Add New Staff</h3>
+          <form id="addStaffForm">
+            <label for="addStaffName">Name:</label>
+            <input type="text" id="addStaffName" name="name" required><br>
+
+            <label for="addStaffEmail">Email:</label>
+            <input type="email" id="addStaffEmail" name="email" required><br>
+
+            <label for="addStaffPassword">Password:</label>
+            <input type="text" id="addStaffPassword" name="password" required><br>
+
+            <label for="addStaffPhone">Phone:</label>
+            <input type="text" id="addStaffPhone" name="phone" required><br>
+
+            <label for="addStaffPosition">Position:</label>
+            <input type="text" id="addStaffPosition" name="position" required><br>
+
+            <label for="addStaffDepartment">Department:</label>
+            <input type="text" id="addStaffDepartment" name="department" required><br>
+
+            <button type="submit">Add Staff</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Patients Management -->
+      <div id="patients" class="tab-pane fade">
+        <h4>Patients</h4>
+        <button class="btn btn-success mb-3" onclick="addEntity('patient')">Add Patient</button>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="patientTableBody"></tbody>
+        </table>
+        <div id="editPatientFormContainer" style="display: none;">
+          <h3>Edit Patient</h3>
+          <form id="editPatientForm">
+            <input type="hidden" id="editPatientId">
+
+            <div class="form-group">
+              <label for="editPatientName">Name</label>
+              <input type="text" id="editPatientName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editPatientEmail">Email</label>
+              <input type="email" id="editPatientEmail" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editPatientPhone">Phone</label>
+              <input type="tel" id="editPatientPhone" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editPatientAddress">Address</label>
+              <input type="text" id="editPatientAddress" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editPatientDateOfBirth">Date of Birth</label>
+              <input type="date" id="editPatientDateOfBirth" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" id="cancelPatientEdit" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
+        <div id="addPatientFormContainer" style="display:none;">
+          <h3>Add New Patient</h3>
+          <form id="addPatientForm">
+            <label for="addPatientName">Name:</label>
+            <input type="text" id="addPatientName" name="name" required><br>
+
+            <label for="addPatientEmail">Email:</label>
+            <input type="email" id="addPatientEmail" name="email" required><br>
+
+            <label for="addPatientPassword">Password:</label>
+            <input type="text" id="addPatientPassword" name="password" required><br>
+
+            <label for="addPatientPhone">Phone:</label>
+            <input type="text" id="addPatientPhone" name="phone" required><br>
+
+            <label for="addPatientAddress">Address:</label>
+            <input type="text" id="addPatientAddress" name="address" required><br>
+
+            <label for="addPatientDateOfBirth">Date of Birth:</label>
+            <input type="date" id="addPatientDateOfBirth" name="dateOfBirth" required><br>
+
+            <button type="submit">Add Patient</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Doctors Management -->
+      <div id="doctors" class="tab-pane fade">
+        <h4>Doctors</h4>
+        <button class="btn btn-success mb-3" onclick="addEntity('doctor')">Add Doctor</button>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Specialty</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="doctorTableBody"></tbody>
+        </table>
+        <div id="editDoctorFormContainer" style="display: none;">
+          <h3>Edit Doctor</h3>
+          <form id="editDoctorForm">
+            <input type="hidden" id="editDoctorId">
+
+            <div class="form-group">
+              <label for="editDoctorName">Name</label>
+              <input type="text" id="editDoctorName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editDoctorSpecialty">Specialty</label>
+              <input type="text" id="editDoctorSpecialty" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editDoctorEmail">Email</label>
+              <input type="email" id="editDoctorEmail" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editDoctorPhone">Phone</label>
+              <input type="tel" id="editDoctorPhone" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" id="cancelDoctorEdit" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
+        <div id="addDoctorFormContainer" style="display:none;">
+          <h3>Add New Doctor</h3>
+          <form id="addDoctorForm">
+            <label for="addDoctorName">Name:</label>
+            <input type="text" id="addDoctorName" name="name" required><br>
+
+            <label for="addDoctorSpecialty">Specialty:</label>
+            <input type="text" id="addDoctorSpecialty" name="specialty" required><br>
+
+            <label for="addDoctorEmail">Email:</label>
+            <input type="email" id="addDoctorEmail" name="email" required><br>
+
+            <label for="addDoctorPassword">Password:</label>
+            <input type="text" id="addDoctorPassword" name="password" required><br>
+
+            <label for="addDoctorPhone">Phone:</label>
+            <input type="text" id="addDoctorPhone" name="phone" required><br>
+
+            <button type="submit">Add Doctor</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Rooms Management -->
+      <div id="rooms" class="tab-pane fade">
+        <h4>Rooms</h4>
+        <button class="btn btn-success mb-3" onclick="addEntity('room')">Add Room</button>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="roomTableBody"></tbody>
+        </table>
+        <div id="editRoomFormContainer" style="display: none;">
+          <h3>Edit Room</h3>
+          <form id="editRoomForm">
+            <input type="hidden" id="editRoomId">
+
+            <div class="form-group">
+              <label for="editRoomNumber">Room Number</label>
+              <input type="text" id="editRoomNumber" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editRoomType">Room Type</label>
+              <input type="text" id="editRoomType" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editRoomPrice">Price</label>
+              <input type="number" id="editRoomPrice" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" id="cancelRoomEdit" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
+        <div id="addRoomFormContainer" style="display:none;">
+          <h3>Add New Room</h3>
+          <form id="addRoomForm">
+            <label for="addRoomNumber">Room Number:</label>
+            <input type="text" id="addRoomNumber" name="number" required><br>
+
+            <label for="addRoomType">Room Type:</label>
+            <input type="text" id="addRoomType" name="type" required><br>
+
+            <label for="addRoomPrice">Room Price:</label>
+            <input type="number" id="addRoomPrice" name="price" required><br>
+
+            <button type="submit">Add Room</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Medicines Management -->
+      <div id="medicines" class="tab-pane fade">
+        <h4>Medicines</h4>
+        <button class="btn btn-success mb-3" onclick="addEntity('medicine')">Add Medicine</button>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="medicineTableBody"></tbody>
+        </table>
+        <div id="editMedicineFormContainer" style="display: none;">
+          <h3>Edit Medicine</h3>
+          <form id="editMedicineForm">
+            <input type="hidden" id="editMedicineId">
+
+            <div class="form-group">
+              <label for="editMedicineName">Medicine Name</label>
+              <input type="text" id="editMedicineName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editMedicineManufacturer">Manufacturer</label>
+              <input type="text" id="editMedicineManufacturer" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editMedicinePrice">Price</label>
+              <input type="number" id="editMedicinePrice" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editMedicineExpiryDate">Expiry Date</label>
+              <input type="date" id="editMedicineExpiryDate" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editMedicineQuantity">Quantity</label>
+              <input type="number" id="editMedicineQuantity" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" id="cancelMedicineEdit" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
+        <div id="addMedicineFormContainer" style="display:none;">
+          <h3>Add New Medicine</h3>
+          <form id="addMedicineForm">
+            <label for="addMedicineName">Medicine Name:</label>
+            <input type="text" id="addMedicineName" name="name" required><br>
+
+            <label for="addMedicineManufacturer">Manufacturer:</label>
+            <input type="text" id="addMedicineManufacturer" name="manufacturer" required><br>
+
+            <label for="addMedicinePrice">Price:</label>
+            <input type="number" id="addMedicinePrice" name="price" required><br>
+
+            <label for="addMedicineExpiryDate">Expiry Date:</label>
+            <input type="date" id="addMedicineExpiryDate" name="expiryDate" required><br>
+
+            <label for="addMedicineQuantity">Quantity:</label>
+            <input type="number" id="addMedicineQuantity" name="quantity" required><br>
+
+            <button type="submit">Add Medicine</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="appointments" class="tab-pane fade">
+        <h4>Appointments</h4>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Doctor</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentTableBody"></tbody>
+        </table>
+        <div id="editFormContainer" style="display: none;">
+          <h3>Edit Appointment</h3>
+          <form id="editAppointmentForm">
+            <input type="hidden" id="editAppointmentId">
+
+            <div class="form-group">
+              <label for="editAppointmentDate">Appointment Date</label>
+              <input type="datetime-local" id="editAppointmentDate" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editDiagnosis">Diagnosis</label>
+              <input type="text" id="editDiagnosis" class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" id="cancelEdit" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const pathParts = window.location.pathname.split('/'); // Split by '/'
+      const adminId = pathParts[pathParts.length - 1];
+      loadAdminDetails(adminId);
+      loadEntities('staff');
+      loadEntities('patient');
+      loadEntities('doctor');
+      loadEntities('room');
+      loadEntities('medicine');
+      loadEntities('appointment');
+    });
+
+    function loadAdminDetails(adminId) {
+      axios.get(`/api/admins/${adminId}`)
+        .then(response => {
+          const admin = response.data;
+          const adminHtml = `
+            <h3>Your Details</h3>
+            <p><strong>Name:</strong> <span id="adminName">${admin.name}</span></p>
+            <p><strong>Email:</strong> <span id="adminEmail">${admin.email}</span></p>
+            <p><strong>Role:</strong> <span id="adminRole">${admin.role}</span></p>
+            <button class="btn btn-primary" onclick="editAdminDetails()">Edit Details</button>
+          `;
+          // Replace the form with the admin details
+          document.getElementById('adminDetails').innerHTML = adminHtml;
+        })
+        .catch(error => console.error('Error loading admin details:', error));
+    }
+
+    function editAdminDetails() {
+  // Get the current admin details
+  const pathParts = window.location.pathname.split('/'); // Split by '/'
+  const adminId = pathParts[pathParts.length - 1]; // You should replace 'adminId' with the actual admin ID or pass it dynamically
+
+  // Get the existing details of the admin
+  axios.get(`/api/admins/${adminId}`)
+    .then(response => {
+      const admin = response.data;
+
+      // Create a form to edit admin details
+      const formHtml = `
+        <h3>Edit Admin Details</h3>
+        <form id="editAdminForm">
+          <div>
+            <label for="edit-name">Name:</label>
+            <input type="text" id="edit-name" value="${admin.name}" required />
+          </div>
+          <div>
+            <label for="edit-email">Email:</label>
+            <input type="email" id="edit-email" value="${admin.email}" required />
+          </div>
+          <div>
+            <label for="edit-role">Role:</label>
+            <select id="edit-role">
+              <option value="admin" ${admin.role === 'admin' ? 'selected' : ''}>Admin</option>
+              <option value="staff" ${admin.role === 'staff' ? 'selected' : ''}>Staff</option>
+            </select>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      `;
+
+      // Replace the existing content with the edit form
+      document.getElementById('adminDetails').innerHTML = formHtml;
+
+      // Handle form submission
+      document.getElementById('editAdminForm').addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent the form from refreshing the page
+
+        const updatedAdmin = {
+          name: document.getElementById('edit-name').value,
+          email: document.getElementById('edit-email').value,
+          role: document.getElementById('edit-role').value
+        };
+
+        // Send PUT request to update admin details
+        axios.put(`/api/admins/${adminId}`, updatedAdmin)
+          .then(response => {
+            // On successful update, reload the details
+            loadAdminDetails(adminId);
+          })
+          .catch(error => console.error('Error updating admin details:', error));
+      });
+    })
+    .catch(error => console.error('Error fetching admin details:', error));
+}
+
+function cancelEdit() {
+  // Simply reload the admin details without making changes
+  const pathParts = window.location.pathname.split('/'); // Split by '/'
+  const adminId = pathParts[pathParts.length - 1];
+  loadAdminDetails(adminId);
+}
+
+
+    function loadEntities(entityType) {
+      axios.get(`/api/${entityType}s`)
+        .then(response => {
+          const data = response.data;
+          const tableBody = document.getElementById(`${entityType}TableBody`);
+          tableBody.innerHTML = '';
+
+          data.forEach(item => {
+            let rowHTML = '<tr>';
+
+            // Handle specific entity types and their fields
+            if (entityType === 'appointment') {
+              // Appointments: Display patient, doctor, date, etc.
+              rowHTML += `
+                <td>${item.patient ? item.patient.name : 'N/A'}</td>
+                <td>${item.doctor ? item.doctor.name : 'N/A'}</td>
+                <td>${new Date(item.appointmentDate).toLocaleDateString()}</td>
+                <td>${item.diagnosis || 'N/A'}</td>
+                <td>
+                  <button class="btn btn-warning" onclick="editEntity('${entityType}', '${item._id}')">Edit</button>
+                  <button class="btn btn-danger" onclick="deleteEntity('${entityType}', '${item._id}')">Delete</button>
+                </td>
+              `;
+            } else {
+              // For other entities (staff, patients, doctors, rooms, medicines)
+              rowHTML += `
+                <td>${item.name || item.number || 'N/A'}</td>
+                <td>${item.specialty || item.type || item.email || item.price || 'N/A'}</td>
+                <td>${item.phone || item.quantity || item.price || ''}</td>
+                <td>
+                  <button class="btn btn-warning" onclick="editEntity('${entityType}', '${item._id}')">Edit</button>
+                  <button class="btn btn-danger" onclick="deleteEntity('${entityType}', '${item._id}')">Delete</button>
+                </td>
+              `;
+            }
+
+            rowHTML += '</tr>';
+            tableBody.innerHTML += rowHTML;
+          });
+        })
+        .catch(error => console.error(`Error loading ${entityType}s:`, error));
+    }
+
+
+    function editEntity(entityType, entityId) {
+      // Make a GET request to fetch the entity's data by its ID
+      axios.get(`/api/${entityType}s/${entityId}`)
+        .then(response => {
+          const item = response.data;
+
+          // Handle editing appointment
+          if (entityType === 'appointment') {
+            document.getElementById('editAppointmentId').value = item._id;
+            document.getElementById('editAppointmentDate').value = new Date(item.appointmentDate).toISOString().slice(0, 16); // Format datetime
+            document.getElementById('editDiagnosis').value = item.diagnosis || '';
+
+            // Show the form for appointment editing
+            document.getElementById('editFormContainer').style.display = 'block';
+          }
+
+          // Handle editing doctor
+          else if (entityType === 'doctor') {
+            document.getElementById('editDoctorId').value = item._id;
+            document.getElementById('editDoctorName').value = item.name;
+            document.getElementById('editDoctorSpecialty').value = item.specialty;
+            document.getElementById('editDoctorEmail').value = item.email;
+            document.getElementById('editDoctorPhone').value = item.phone;
+
+            // Show the form for doctor editing
+            document.getElementById('editDoctorFormContainer').style.display = 'block';
+          }
+
+          // Handle editing room
+          else if (entityType === 'room') {
+            document.getElementById('editRoomId').value = item._id;
+            document.getElementById('editRoomNumber').value = item.number;
+            document.getElementById('editRoomType').value = item.type;
+            document.getElementById('editRoomPrice').value = item.price;
+
+            // Show the form for room editing
+            document.getElementById('editRoomFormContainer').style.display = 'block';
+          }
+
+          // Handle editing patient
+          else if (entityType === 'patient') {
+            document.getElementById('editPatientId').value = item._id;
+            document.getElementById('editPatientName').value = item.name;
+            document.getElementById('editPatientEmail').value = item.email;
+            document.getElementById('editPatientPhone').value = item.phone;
+            document.getElementById('editPatientAddress').value = item.address;
+            document.getElementById('editPatientDateOfBirth').value = new Date(item.dateOfBirth).toISOString().slice(0, 10); // Format date
+
+            // Show the form for patient editing
+            document.getElementById('editPatientFormContainer').style.display = 'block';
+          }
+
+          // Handle editing staff
+          else if (entityType === 'staff') {
+            document.getElementById('editStaffId').value = item._id;
+            document.getElementById('editStaffName').value = item.name;
+            document.getElementById('editStaffEmail').value = item.email;
+            document.getElementById('editStaffPhone').value = item.phone;
+            document.getElementById('editStaffPosition').value = item.position;
+            document.getElementById('editStaffDepartment').value = item.department;
+
+            // Show the form for staff editing
+            document.getElementById('editStaffFormContainer').style.display = 'block';
+          }
+
+          // Handle editing medicine
+          else if (entityType === 'medicine') {
+            document.getElementById('editMedicineId').value = item._id;
+            document.getElementById('editMedicineName').value = item.name;
+            document.getElementById('editMedicineManufacturer').value = item.manufacturer;
+            document.getElementById('editMedicinePrice').value = item.price;
+            document.getElementById('editMedicineExpiryDate').value = new Date(item.expiryDate).toISOString().slice(0, 10); // Format date
+            document.getElementById('editMedicineQuantity').value = item.quantity;
+
+            // Show the form for medicine editing
+            document.getElementById('editMedicineFormContainer').style.display = 'block';
+          }
+
+          // Handle other entity types if necessary...
+        })
+        .catch(error => console.error(`Error fetching record for edit:`, error));
+    }
+
+    // Appointment Edit Form Submission
+    document.getElementById('editAppointmentForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const appointmentId = document.getElementById('editAppointmentId').value;
+      const updatedAppointment = {
+        appointmentDate: new Date(document.getElementById('editAppointmentDate').value).toISOString(),
+        diagnosis: document.getElementById('editDiagnosis').value
+      };
+      console.log(updatedAppointment); // Log the object before sending it
+
+      // Make a PUT request to update the appointment
+      axios.put(`/api/appointments/${appointmentId}/appointment`, updatedAppointment)
+        .then(response => {
+          alert('Appointment updated successfully!');
+          loadEntities('appointment'); // Reload the appointments table
+          document.getElementById('editFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error updating appointment:', error);
+          alert('Error updating appointment.');
+        });
+    });
+
+    // Doctor Edit Form Submission
+    document.getElementById('editDoctorForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const doctorId = document.getElementById('editDoctorId').value;
+      const updatedDoctor = {
+        name: document.getElementById('editDoctorName').value,
+        specialty: document.getElementById('editDoctorSpecialty').value,
+        email: document.getElementById('editDoctorEmail').value,
+        phone: document.getElementById('editDoctorPhone').value
+      };
+
+      // Make a PUT request to update the doctor
+      axios.put(`/api/doctors/${doctorId}`, updatedDoctor)
+        .then(response => {
+          alert('Doctor updated successfully!');
+          loadEntities('doctor'); // Reload the doctors table
+          document.getElementById('editDoctorFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error updating doctor:', error);
+          alert('Error updating doctor.');
+        });
+    });
+
+    // Room Edit Form Submission
+    document.getElementById('editRoomForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const roomId = document.getElementById('editRoomId').value;
+      const updatedRoom = {
+        number: document.getElementById('editRoomNumber').value,
+        type: document.getElementById('editRoomType').value,
+        price: document.getElementById('editRoomPrice').value
+      };
+
+      // Make a PUT request to update the room
+      axios.put(`/api/rooms/${roomId}`, updatedRoom)
+        .then(response => {
+          alert('Room updated successfully!');
+          loadEntities('room'); // Reload the rooms table
+          document.getElementById('editRoomFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error updating room:', error);
+          alert('Error updating room.');
+        });
+    });
+
+    // Patient Edit Form Submission
+    document.getElementById('editPatientForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const patientId = document.getElementById('editPatientId').value;
+      const updatedPatient = {
+        name: document.getElementById('editPatientName').value,
+        email: document.getElementById('editPatientEmail').value,
+        phone: document.getElementById('editPatientPhone').value,
+        address: document.getElementById('editPatientAddress').value,
+        dateOfBirth: new Date(document.getElementById('editPatientDateOfBirth').value)
+      };
+
+      // Make a PUT request to update the patient
+      axios.put(`/api/patients/${patientId}`, updatedPatient)
+        .then(response => {
+          alert('Patient updated successfully!');
+          loadEntities('patient'); // Reload the patients table
+          document.getElementById('editPatientFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error updating patient:', error);
+          alert('Error updating patient.');
+        });
+    });
+
+    // Staff Edit Form Submission
+    document.getElementById('editStaffForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const staffId = document.getElementById('editStaffId').value;
+      const updatedStaff = {
+        name: document.getElementById('editStaffName').value,
+        email: document.getElementById('editStaffEmail').value,
+        phone: document.getElementById('editStaffPhone').value,
+        position: document.getElementById('editStaffPosition').value,
+        department: document.getElementById('editStaffDepartment').value
+      };
+
+      // Make a PUT request to update the staff
+      axios.put(`/api/staffs/${staffId}`, updatedStaff)
+        .then(response => {
+          alert('Staff updated successfully!');
+          loadEntities('staff'); // Reload the staff table
+          document.getElementById('editStaffFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error updating staff:', error);
+          alert('Error updating staff.');
+        });
+    });
+
+    // Medicine Edit Form Submission
+    document.getElementById('editMedicineForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const medicineId = document.getElementById('editMedicineId').value;
+      const updatedMedicine = {
+        name: document.getElementById('editMedicineName').value,
+        manufacturer: document.getElementById('editMedicineManufacturer').value,
+        price: document.getElementById('editMedicinePrice').value,
+        expiryDate: new Date(document.getElementById('editMedicineExpiryDate').value),
+        quantity: document.getElementById('editMedicineQuantity').value
+      };
+
+      // Make a PUT request to update the medicine
+      axios.put(`/api/medicines/${medicineId}`, updatedMedicine)
+        .then(response => {
+          alert('Medicine updated successfully!');
+          loadEntities('medicine'); // Reload the medicine table
+          document.getElementById('editMedicineFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error updating medicine:', error);
+          alert('Error updating medicine.');
+        });
+    });
+
+
+    // Cancel edit (hide the form)
+    document.getElementById('cancelEdit').addEventListener('click', function () {
+      document.getElementById('editFormContainer').style.display = 'none';
+    });
+
+    function deleteEntity(entityType, entityId) {
+      axios.delete(`/api/${entityType}s/${entityId}`)
+        .then(() => loadEntities(entityType))
+        .catch(error => console.error(`Error deleting ${entityType}:`, error));
+    }
+
+    function addEntity(entityType) {
+      console.log(`Add new ${entityType}`);
+
+      // Display the form based on the entityType
+      if (entityType === 'doctor') {
+        document.getElementById('addDoctorFormContainer').style.display = 'block';
+      } else if (entityType === 'room') {
+        document.getElementById('addRoomFormContainer').style.display = 'block';
+      } else if (entityType === 'patient') {
+        document.getElementById('addPatientFormContainer').style.display = 'block';
+      } else if (entityType === 'staff') {
+        document.getElementById('addStaffFormContainer').style.display = 'block';
+      } else if (entityType === 'medicine') {
+        document.getElementById('addMedicineFormContainer').style.display = 'block';
+      }
+    }
+
+    // Doctor Form Submission
+    document.getElementById('addDoctorForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const newDoctor = {
+        name: document.getElementById('addDoctorName').value,
+        specialty: document.getElementById('addDoctorSpecialty').value,
+        email: document.getElementById('addDoctorEmail').value,
+        password: document.getElementById('addDoctorPassword').value,
+        phone: document.getElementById('addDoctorPhone').value,
+      };
+
+      // Send a POST request to create a new doctor
+      axios.post('/api/doctors', newDoctor)
+        .then(response => {
+          alert('Doctor added successfully!');
+          loadEntities('doctor'); // Reload the doctor table
+          document.getElementById('addDoctorFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error adding doctor:', error);
+          alert('Error adding doctor.');
+        });
+    });
+
+    // Room Form Submission
+    document.getElementById('addRoomForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const newRoom = {
+        number: document.getElementById('addRoomNumber').value,
+        type: document.getElementById('addRoomType').value,
+        price: document.getElementById('addRoomPrice').value,
+      };
+
+      // Send a POST request to create a new room
+      axios.post('/api/rooms', newRoom)
+        .then(response => {
+          alert('Room added successfully!');
+          loadEntities('room'); // Reload the room table
+          document.getElementById('addRoomFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error adding room:', error);
+          alert('Error adding room.');
+        });
+    });
+
+    // Patient Form Submission
+    document.getElementById('addPatientForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const newPatient = {
+        name: document.getElementById('addPatientName').value,
+        email: document.getElementById('addPatientEmail').value,
+        password: document.getElementById('addPatientPassword').value,
+        phone: document.getElementById('addPatientPhone').value,
+        address: document.getElementById('addPatientAddress').value,
+        dateOfBirth: new Date(document.getElementById('addPatientDateOfBirth').value),
+      };
+
+      // Send a POST request to create a new patient
+      axios.post('/api/patients', newPatient)
+        .then(response => {
+          alert('Patient added successfully!');
+          loadEntities('patient'); // Reload the patient table
+          document.getElementById('addPatientFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error adding patient:', error);
+          alert('Error adding patient.');
+        });
+    });
+
+    // Staff Form Submission
+    document.getElementById('addStaffForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const newStaff = {
+        name: document.getElementById('addStaffName').value,
+        email: document.getElementById('addStaffEmail').value,
+        password: document.getElementById('addStaffPassword').value,
+        phone: document.getElementById('addStaffPhone').value,
+        position: document.getElementById('addStaffPosition').value,
+        department: document.getElementById('addStaffDepartment').value,
+      };
+
+      // Send a POST request to create a new staff
+      axios.post('/api/staffs', newStaff)
+        .then(response => {
+          alert('Staff added successfully!');
+          loadEntities('staff'); // Reload the staff table
+          document.getElementById('addStaffFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error adding staff:', error);
+          alert('Error adding staff.');
+        });
+    });
+
+    // Medicine Form Submission
+    document.getElementById('addMedicineForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const newMedicine = {
+        name: document.getElementById('addMedicineName').value,
+        manufacturer: document.getElementById('addMedicineManufacturer').value,
+        price: document.getElementById('addMedicinePrice').value,
+        expiryDate: new Date(document.getElementById('addMedicineExpiryDate').value),
+        quantity: document.getElementById('addMedicineQuantity').value,
+      };
+
+      // Send a POST request to create a new medicine
+      axios.post('/api/medicines', newMedicine)
+        .then(response => {
+          alert('Medicine added successfully!');
+          loadEntities('medicine'); // Reload the medicine table
+          document.getElementById('addMedicineFormContainer').style.display = 'none'; // Hide the form
+        })
+        .catch(error => {
+          console.error('Error adding medicine:', error);
+          alert('Error adding medicine.');
+        });
+    });
+
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

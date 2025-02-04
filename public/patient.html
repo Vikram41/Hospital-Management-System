@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+    }
+    h1, h2 {
+      color: #343a40;
+    }
+    .container {
+      max-width: 1200px;
+      margin-top: 20px;
+    }
+    .form-control, .btn {
+      border-radius: 0.5rem;
+    }
+    table {
+      width: 100%;
+      margin-bottom: 30px;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .btn-custom {
+      margin-top: 10px;
+    }
+    .btn-custom:hover {
+      background-color: #0056b3;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+    }
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    #patient-details {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="text-center mb-5">Patient Details</h1>
+    <div id="patient-details"></div>
+
+    <div id="edit-patient-details" style="display: none;">
+      <h2>Edit Patient Details</h2>
+      <form id="edit-patient-form">
+        <div class="form-group">
+          <label for="edit-name">Name:</label>
+          <input type="text" class="form-control" id="edit-name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-email">Email:</label>
+          <input type="email" class="form-control" id="edit-email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-dob">Date of Birth:</label>
+          <input type="date" class="form-control" id="edit-dob" name="dateOfBirth" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-phone">Phone:</label>
+          <input type="tel" class="form-control" id="edit-phone" name="phone" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-address">Address:</label>
+          <input type="text" class="form-control" id="edit-address" name="address" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-medical-history">Medical History:</label>
+          <textarea class="form-control" id="edit-medical-history" name="medicalHistory" required></textarea>
+        </div>
+        <div class="action-buttons">
+          <button type="submit" class="btn btn-primary btn-custom">Save</button>
+          <button type="button" class="btn btn-secondary btn-custom" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <h2 class="mt-5">Make an Appointment</h2>
+    <form id="appointment-form">
+      <div class="form-group">
+        <label for="specialty">Specialty:</label>
+        <select id="specialty" name="specialty" class="form-control" required>
+          <option value="" disabled selected>Select specialty</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="doctor">Doctor:</label>
+        <select id="doctor" name="doctor" class="form-control" required>
+          <option value="" disabled selected>Select doctor</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="appointmentDate">Appointment Date and Time:</label>
+        <input type="datetime-local" id="appointmentDate" name="appointmentDate" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-custom">Book Appointment</button>
+    </form>
+
+    <h2 class="mt-5">Appointments</h2>
+    <table id="appointments-list">
+      <thead>
+        <tr>
+          <th>Doctor Name</th>
+          <th>Specialty</th>
+          <th>Appointment Date</th>
+          <th>Diagnosis</th>
+          <th>Prescription Details</th>
+          <th>Consultation Fee</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h2 class="mt-5">Bills</h2>
+    <table id="bills-list">
+      <thead>
+        <tr>
+          <th>Doctor Name</th>
+          <th>Appointment Date</th>
+          <th>Consultation Fee</th>
+          <th>Medicine Cost</th>
+          <th>Total Amount</th>
+          <th>Paid</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+  </div>
+
+  <!-- Include jsPDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const patientId = window.location.pathname.split('/').pop();
+
+      if (patientId) {
+        try {
+          const patientResponse = await fetch(`/api/patients/${patientId}`);
+          const patient = await patientResponse.json();
+
+          if (!patient) {
+            document.getElementById('patient-details').innerHTML = `<p>Patient not found.</p>`;
+            return;
+          }
+
+          displayPatientDetails(patient);
+
+          try {
+            const specialtiesResponse = await fetch('/api/doctors/specialties');
+            const specialties = await specialtiesResponse.json();
+
+            const specialtySelect = document.getElementById('specialty');
+            specialties.forEach(specialty => {
+              const option = document.createElement('option');
+              option.value = specialty;
+              option.textContent = specialty;
+              specialtySelect.appendChild(option);
+            });
+
+            specialtySelect.addEventListener('change', async () => {
+              const selectedSpecialty = specialtySelect.value;
+              const doctorsResponse = await fetch(`/api/doctors?specialty=${selectedSpecialty}`);
+              const doctors = await doctorsResponse.json();
+
+              const doctorSelect = document.getElementById('doctor');
+              doctorSelect.innerHTML = '<option value="" disabled selected>Select doctor</option>';
+              doctors.forEach(doctor => {
+                const option = document.createElement('option');
+                option.value = doctor._id;
+                option.textContent = doctor.name;
+                doctorSelect.appendChild(option);
+              });
+            });
+
+            document.getElementById('appointment-form').addEventListener('submit', makeAppointment);
+
+            fetchAppointmentsAndBills(patientId);
+
+          } catch (error) {
+            console.error('Error fetching specialties or doctors:', error);
+            document.getElementById('patient-details').innerHTML = `<p>Error fetching specialties or doctors.</p>`;
+          }
+
+        } catch (error) {
+          document.getElementById('patient-details').innerHTML = `<p>Error fetching patient details.</p>`;
+          console.error('Error:', error);
+        }
+      } else {
+        document.getElementById('patient-details').innerHTML = `<p>Patient ID not provided in URL.</p>`;
+      }
+    });
+
+    function displayPatientDetails(patient) {
+      const detailsDiv = document.getElementById('patient-details');
+      detailsDiv.innerHTML = `
+        <p><strong>Name:</strong> ${patient.name}</p>
+        <p><strong>Email:</strong> ${patient.email}</p>
+        <p><strong>Date of Birth:</strong> ${new Date(patient.dateOfBirth).toLocaleDateString()}</p>
+        <p><strong>Phone:</strong> ${patient.phone}</p>
+        <p><strong>Address:</strong> ${patient.address}</p>
+        <p><strong>Medical History:</strong> ${patient.medicalHistory.join(', ')}</p>
+        <div class="action-buttons">
+          <button class="btn btn-warning btn-custom" onclick="editField()">Edit</button>
+        </div>
+      `;
+    }
+
+    function editField() {
+      const patientId = window.location.pathname.split('/').pop();
+  
+  // Display the edit form
+  document.getElementById('edit-patient-details').style.display = 'block';
+
+  // Fetch patient data to populate the form
+  fetch(`/api/patients/${patientId}`)
+    .then(response => response.json())
+    .then(patient => {
+      document.getElementById('edit-name').value = patient.name;
+      document.getElementById('edit-email').value = patient.email;
+      document.getElementById('edit-dob').value = new Date(patient.dateOfBirth).toISOString().split('T')[0];
+      document.getElementById('edit-phone').value = patient.phone;
+      document.getElementById('edit-address').value = patient.address;
+      document.getElementById('edit-medical-history').value = patient.medicalHistory.join(', ');
+    });
+
+  // Add an event listener for form submission to send the PUT request
+  document.getElementById('edit-patient-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Gather updated values from the form
+    const updatedPatient = {
+      name: document.getElementById('edit-name').value,
+      email: document.getElementById('edit-email').value,
+      dateOfBirth: document.getElementById('edit-dob').value,
+      phone: document.getElementById('edit-phone').value,
+      address: document.getElementById('edit-address').value,
+      medicalHistory: document.getElementById('edit-medical-history').value.split(',').map(item => item.trim())
+    };
+
+    // Send the PUT request to update patient details
+    fetch(`/api/patients/${patientId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedPatient)
+    })
+    .then(response => response.json())
+    .then(updatedPatient => {
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error updating patient details:', error);
+      alert('Error updating patient details');
+    });
+  });
+      
+        
+    }
+
+    function cancelEdit() {
+      document.getElementById('edit-patient-details').style.display = 'none';
+    }
+
+    async function makeAppointment(event) {
+      event.preventDefault();
+
+      const patientId = window.location.pathname.split('/').pop();
+      const formData = new FormData(event.target);
+      let appointmentDate = formData.get('appointmentDate');
+
+      // Check if the appointment time is between 9 AM and 9 PM
+      const selectedDate = new Date(appointmentDate);
+      const selectedHour = selectedDate.getHours();
+
+      // Check if the selected date is in the future (greater than current date and time)
+      const currentDate = new Date();
+      if (selectedDate <= currentDate) {
+        alert("Appointment must be scheduled for a future date and time.");
+        return;
+      }
+
+      // Ensure the time is within the allowed range (9 AM to 9 PM)
+      if (selectedHour < 9 || selectedHour >= 21) {
+        alert("Appointment time must be between 9 AM and 9 PM.");
+        return;
+      }
+
+      const appointmentData = {
+        patient: patientId,
+        doctor: formData.get('doctor'),
+        appointmentDate: appointmentDate
+      };
+
+      try {
+        // Send the appointment data to the backend
+        await fetch('/api/appointments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(appointmentData)
+        });
+
+        // Update appointments and bills after making a new appointment
+        fetchAppointmentsAndBills(patientId);
+
+        // Clear the form after the appointment is successfully made
+        event.target.reset();  // This will reset all the fields in the form
+
+      } catch (error) {
+        console.error('Error making appointment:', error);
+      }
+    }
+
+
+    function downloadBillPDF(billId) {
+  fetch(`/api/bills/${billId}`)
+    .then(response => response.json())
+    .then(bill => {
+      const { jsPDF } = window.jspdf;
+
+      const appointment = bill.appointment;
+
+      let medicineCost = 0;
+      let prescriptionData = [];
+
+      if (appointment.prescription && Array.isArray(appointment.prescription)) {
+        prescriptionData = appointment.prescription.map((item, index) => {
+          if (item.medicine && item.medicine.price) {
+            const totalCost = item.medicine.price * item.quantity;
+            medicineCost += totalCost;
+            return [
+              index + 1,
+              item.medicine.name,
+              item.medicine.manufacturer,
+              item.quantity,
+              `Rs. ${item.medicine.price.toFixed(2)}`,
+              `Rs. ${totalCost.toFixed(2)}`
+            ];
+          }
+          return [];
+        });
+      }
+
+      const totalAmount = appointment.consultationFees + medicineCost;
+
+      const doc = new jsPDF();
+      doc.text(`Bill ID: ${bill._id}`, 10, 10);
+      doc.text(`Doctor: ${bill.doctor.name}`, 10, 20);
+      doc.text(`Appointment Date: ${new Date(appointment.appointmentDate).toLocaleString('en-GB', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).replace(',', '').replace(/(\d{2})(-\w+)/, '$1-$2')}`, 10, 30);
+      doc.text(`Consultation Fee: Rs. ${appointment.consultationFees}`, 10, 40);
+      doc.text(`Medicine Cost: Rs. ${medicineCost.toFixed(2)}`, 10, 50);
+      doc.text(`Total Amount: Rs. ${totalAmount.toFixed(2)}`, 10, 60);
+      doc.text(`Paid: ${bill.paid ? 'Yes' : 'No'}`, 10, 70);
+
+      // Add a table for the prescription
+      if (prescriptionData.length > 0) {
+        doc.autoTable({
+          startY: 80,
+          head: [['#', 'Medicine', 'Manufacturer', 'Quantity', 'Unit Price', 'Total Cost']],
+          body: prescriptionData
+        });
+      } else {
+        doc.text('No prescriptions available.', 10, 80);
+      }
+
+      doc.save(`bill_${bill._id}.pdf`);
+    })
+    .catch(error => {
+      console.error('Error downloading bill PDF:', error);
+    });
+}
+
+
+
+
+
+    async function fetchAppointmentsAndBills(patientId) {
+      try {
+        // Fetch appointments
+        const appointmentsResponse = await fetch(`/api/patients/${patientId}/appointments`);
+        const appointments = await appointmentsResponse.json();
+        const appointmentsList = document.getElementById('appointments-list');
+        appointmentsList.innerHTML = `<tr>
+            <th>Patient Name</th>
+            <th>Specialty</th>
+            <th>Appointment Date</th>
+            <th>Diagnosis</th>
+            <th>Prescription</th>
+            <th>Consultation Fees</th>
+            <th>Actions</th>
+          </tr>`;
+        appointments.filter(appointment => appointment.patient._id === patientId).forEach(appointment => {
+          const row = document.createElement('tr');
+          const medicineDetails = appointment.prescription.map(p => `${p.medicine.name} (Quantity: ${p.quantity})`).join(', ');
+          row.innerHTML = `
+            <td>${appointment.doctor.name}</td>
+            <td>${appointment.doctor.specialty}</td>
+            <td>${new Date(appointment.appointmentDate).toLocaleString('en-GB', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            })}</td>
+            <td>${appointment.diagnosis}</td>
+            <td>${medicineDetails}</td>
+            <td>Rs. ${appointment.consultationFees}</td>
+            <td>${appointment.diagnosis || appointment.prescription.length > 0 ? '' : `<button class="btn btn-danger" onclick="deleteAppointment('${appointment._id}')">Delete</button>`}</td>
+
+          `;
+          appointmentsList.appendChild(row);
+        });
+
+        // Fetch bills
+        const billsResponse = await fetch(`/api/patients/${patientId}/bills`);
+        const bills = await billsResponse.json();
+        const billsList = document.getElementById('bills-list');
+        billsList.innerHTML = `<tr>
+          <th>Doctor Name</th>
+          <th>Appointment Date</th>
+          <th>Consultation Fee</th>
+          <th>Medicine Cost</th>
+          <th>Total Amount</th>
+          <th>Paid</th>
+          <th>Actions</th>
+        </tr>`;
+        bills.filter(bill => bill.patient._id === patientId).forEach(async bill => {
+          const appointmentResponse = await fetch(`/api/appointments/${bill.appointment._id}`);
+          const appointment = await appointmentResponse.json();
+          const medicineCost = appointment.prescription.reduce((total, item) => total + (item.medicine.price * item.quantity), 0);
+          const totalAmount = bill.amount || (appointment.consultationFees + medicineCost);
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${bill.doctor.name}</td>
+            <td>${new Date(appointment.appointmentDate).toLocaleString('en-GB', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            })}</td>
+            <td>Rs. ${appointment.consultationFees}</td>
+            <td>Rs. ${medicineCost}</td>
+            <td>Rs. ${totalAmount}</td>
+            <td>${bill.paid ? 'Yes' : 'No'}</td>
+            <td>
+              ${!bill.paid ? `<button class="btn btn-warning btn-custom" onclick="payBill('${bill._id}')">Pay</button>` : ''}
+              <button class="btn btn-primary btn-custom" onclick="downloadBillPDF('${bill._id}')">Download PDF</button>
+            </td>
+          `;
+          billsList.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error fetching appointments or bills:', error);
+      }
+    }
+
+    async function deleteAppointment(appointmentId) {
+      try {
+        await fetch(`/api/appointments/${appointmentId}`, {
+          method: 'DELETE'
+        });
+        const patientId = window.location.pathname.split('/').pop();
+        fetchAppointmentsAndBills(patientId); // Update appointments and bills after deleting an appointment
+      } catch (error) {
+        console.error('Error deleting appointment:', error);
+      }
+    }
+
+    async function payBill(billId) {
+      try {
+        await fetch(`/api/bills/${billId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ paid: true })
+        });
+        const patientId = window.location.pathname.split('/').pop();
+        fetchAppointmentsAndBills(patientId); // Update appointments and bills after paying a bill
+      } catch (error) {
+        console.error('Error paying bill:', error);
+      }
+    }
+  </script>
+</body>
+</html>

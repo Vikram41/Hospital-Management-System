@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Doctors</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Doctors List</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Specialty</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+    <tbody id="doctors-list"></tbody>
+  </table>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const response = await fetch('/api/doctors');
+      const doctors = await response.json();
+      const doctorsList = document.getElementById('doctors-list');
+
+      doctors.forEach(doctors => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${doctors.name}</td>
+          <td>${doctors.email}</td>
+          <td>${doctors.specialty}</td>
+          <td>${doctors.phone}</td>
+        `;
+        doctorsList.appendChild(row);
+      });
+    });
+
+  </script>
+</body>
+</html>

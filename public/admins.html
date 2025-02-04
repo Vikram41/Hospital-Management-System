@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Members</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>All Admin Members</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="admins-list"></tbody>
+  </table>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/api/admins');
+        const admins = await response.json();
+        const adminsList = document.getElementById('admins-list');
+
+        admins.forEach(admin => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${admin.name}</td>
+            <td>${admin.email}</td>
+            <td>${admin.role}</td>
+            <td>
+              <button onclick="deleteAdmin('${admin._id}')">Delete</button>
+            </td>
+          `;
+          adminsList.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    });
+
+    async function deleteAdmin(id) {
+      try {
+        await fetch(`/api/admins/${id}`, {
+          method: 'DELETE',
+        });
+        location.reload();
+      } catch (error) {
+        console.error('Error deleting admin:', error);
+      }
+    }
+  </script>
+</body>
+</html>

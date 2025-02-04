@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "name": "Dr. Alice Smith",
+  "email": "alice.smith@example.com",
+  "password": "hashedpassword123",
+  "specialty": "Cardiology",
+  "phone": "123-456-7890",
+  "createdAt": "2024-11-27T12:35:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "name": "Dr. Bob Johnson",
+  "email": "bob.johnson@example.com",
+  "password": "hashedpassword456",
+  "specialty": "Neurology",
+  "phone": "234-567-8901",
+  "createdAt": "2024-11-27T12:35:20.000Z"
+},
+{
+  "_id": {
+    "$oid": "6747435c3838937bbf96bf52"
+  },
+  "name": "Dr. Clara Lee",
+  "email": "clara.lee@example.com",
+  "password": "hashedpassword789",
+  "specialty": "Pediatrics",
+  "phone": "345-678-9012",
+  "createdAt": "2024-11-27T12:35:40.000Z"
+}]

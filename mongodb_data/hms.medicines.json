@@ -1,0 +1,110 @@
+[{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf55"
+  },
+  "name": "Aspirin",
+  "manufacturer": "Bayer",
+  "price": 10.99,
+  "expiryDate": "2025-12-31T00:00:00.000Z",
+  "quantity": 100,
+  "createdAt": "2024-11-27T12:36:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf56"
+  },
+  "name": "Paracetamol",
+  "manufacturer": "GlaxoSmithKline",
+  "price": 5.5,
+  "expiryDate": "2026-06-15T00:00:00.000Z",
+  "quantity": 200,
+  "createdAt": "2024-11-27T12:37:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf57"
+  },
+  "name": "Amoxicillin",
+  "manufacturer": "Pfizer",
+  "price": 20.99,
+  "expiryDate": "2026-04-01T00:00:00.000Z",
+  "quantity": 150,
+  "createdAt": "2024-11-27T12:38:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf58"
+  },
+  "name": "Ibuprofen",
+  "manufacturer": "Advil",
+  "price": 8.25,
+  "expiryDate": "2025-11-20T00:00:00.000Z",
+  "quantity": 250,
+  "createdAt": "2024-11-27T12:39:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf59"
+  },
+  "name": "Ciprofloxacin",
+  "manufacturer": "Bayer",
+  "price": 12.75,
+  "expiryDate": "2026-02-14T00:00:00.000Z",
+  "quantity": 100,
+  "createdAt": "2024-11-27T12:40:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf5a"
+  },
+  "name": "Cetirizine",
+  "manufacturer": "Zyrtec",
+  "price": 6.99,
+  "expiryDate": "2027-03-01T00:00:00.000Z",
+  "quantity": 300,
+  "createdAt": "2024-11-27T12:41:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf5b"
+  },
+  "name": "Metformin",
+  "manufacturer": "Bristol Myers Squibb",
+  "price": 15.99,
+  "expiryDate": "2026-08-18T00:00:00.000Z",
+  "quantity": 120,
+  "createdAt": "2024-11-27T12:42:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf5c"
+  },
+  "name": "Omeprazole",
+  "manufacturer": "Prilosec",
+  "price": 13.5,
+  "expiryDate": "2025-10-05T00:00:00.000Z",
+  "quantity": 180,
+  "createdAt": "2024-11-27T12:43:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf5d"
+  },
+  "name": "Lisinopril",
+  "manufacturer": "Merck",
+  "price": 18.75,
+  "expiryDate": "2027-01-01T00:00:00.000Z",
+  "quantity": 220,
+  "createdAt": "2024-11-27T12:44:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674743ad3838937bbf96bf5e"
+  },
+  "name": "Prednisone",
+  "manufacturer": "Mylan",
+  "price": 9.99,
+  "expiryDate": "2026-09-12T00:00:00.000Z",
+  "quantity": 130,
+  "createdAt": "2024-11-27T12:45:00.000Z"
+}]

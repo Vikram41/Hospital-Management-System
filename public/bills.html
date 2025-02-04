@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bills</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>All Bills</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Patient Name</th>
+        <th>Doctor Name</th>
+        <th>Appointment Date</th>
+        <th>Consultation Fee</th>
+        <th>Medicine Cost</th>
+        <th>Total Amount</th>
+        <th>Paid</th>
+      </tr>
+    </thead>
+    <tbody id="bills-list"></tbody>
+  </table>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/api/bills');
+        const bills = await response.json();
+        const billsList = document.getElementById('bills-list');
+
+        for (const bill of bills) {
+          const appointmentResponse = await fetch(`/api/appointments/${bill.appointment._id}`);
+          const appointment = await appointmentResponse.json();
+
+          // Calculate medicine cost and total amount only if not already provided
+          const medicineCost = appointment.prescription.reduce((total, item) => total + (item.medicine.price * item.quantity), 0);
+          const totalAmount = bill.amount || (appointment.consultationFees + medicineCost);
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${bill.patient.name}</td>
+            <td>${bill.doctor.name}</td>
+            <td>${new Date(bill.appointment.appointmentDate).toLocaleDateString()}</td>
+            <td>${appointment.consultationFees}</td>
+            <td>${medicineCost}</td>
+            <td>${totalAmount}</td>
+            <td>${bill.paid ? 'Yes' : 'No'}</td>
+          `;
+          billsList.appendChild(row);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    });
+  </script>
+</body>
+</html>

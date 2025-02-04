@@ -1,0 +1,144 @@
+[{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e5f"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e54"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf61"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "paid": true,
+  "createdAt": "2024-11-27T12:50:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e60"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e55"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf62"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "paid": false,
+  "createdAt": "2024-11-27T12:52:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e61"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e56"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf63"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "paid": true,
+  "createdAt": "2024-11-27T12:54:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e62"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e57"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf64"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "paid": false,
+  "createdAt": "2024-11-27T12:56:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e63"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e58"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf65"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "paid": true,
+  "createdAt": "2024-11-27T12:58:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e64"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e59"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf61"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "paid": false,
+  "createdAt": "2024-11-27T13:00:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e65"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e5a"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf62"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "paid": true,
+  "createdAt": "2024-11-27T13:02:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e66"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e5b"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf63"
+  },
+  "doctor": {
+    "$oid": "6747434d3838937bbf96bf51"
+  },
+  "paid": true,
+  "createdAt": "2024-11-27T13:04:00.000Z"
+},
+{
+  "_id": {
+    "$oid": "674ddba3584f348ce2b51e67"
+  },
+  "appointment": {
+    "$oid": "674ddb4b584f348ce2b51e5c"
+  },
+  "patient": {
+    "$oid": "674743d83838937bbf96bf64"
+  },
+  "doctor": {
+    "$oid": "6747433f3838937bbf96bf50"
+  },
+  "paid": false,
+  "createdAt": "2024-11-27T13:06:00.000Z"
+}]

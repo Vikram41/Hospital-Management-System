@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Management Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center">Staff Management Panel</h1>
+    <hr>
+
+    <!-- Staff Details Section -->
+    <div id="staffDetails"></div>
+
+    <!-- Patients Section -->
+    <div class="mb-4">
+      <h3>Manage Patients</h3>
+      <button class="btn btn-success mb-2" onclick="openPatientModal()">Add New Patient</button>
+      <table class="table table-striped" id="patientsTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Doctors Section -->
+    <div class="mb-4">
+      <h3>Manage Doctors</h3>
+      <button class="btn btn-success mb-2" onclick="openDoctorModal()">Add New Doctor</button>
+      <table class="table table-striped" id="doctorsTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Specialty</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Appointments Section -->
+    <div class="mb-4">
+      <h3>Manage Appointments</h3>
+      <button class="btn btn-success mb-2" onclick="openAppointmentModal()">Add New Appointment</button>
+      <table class="table table-striped" id="appointmentsTable">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Rooms Section -->
+    <div class="mb-4">
+      <h3>Manage Rooms</h3>
+      <button class="btn btn-success mb-2" onclick="openRoomModal()">Add New Room</button>
+      <table class="table table-striped" id="roomsTable">
+        <thead>
+          <tr>
+            <th>Room Number</th>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Placeholder -->
+  <div id="modalContainer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery (required for Bootstrap's JavaScript) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Bootstrap JS (requires Popper.js) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Fetch and display the logged-in staff's details
+    function loadStaffDetails(staffId) {
+      axios.get(`/api/staffs/${staffId}`)
+        .then(response => {
+          const staff = response.data;
+          document.getElementById('staffDetails').innerHTML = `
+            <h3>My Details</h3>
+            <table class="table">
+              <tr><th>Name</th><td>${staff.name}</td></tr>
+              <tr><th>Email</th><td>${staff.email}</td></tr>
+              <tr><th>Phone</th><td>${staff.phone}</td></tr>
+              <tr><th>Position</th><td>${staff.position}</td></tr>
+              <tr><th>Department</th><td>${staff.department}</td></tr>
+            </table>
+            <button class="btn btn-primary" onclick="editOwnDetails('${staff._id}')">Edit My Details</button>
+          `;
+        })
+        .catch(error => {
+          console.error('Error fetching staff details:', error);
+          document.getElementById('staffDetails').innerHTML = `<p class="text-danger">Failed to load your details.</p>`;
+        });
+    }
+
+    // Function to open edit modal for own details
+    function editOwnDetails(staffId) {
+      axios.get(`/api/staffs/${staffId}`)
+        .then(response => {
+          const staff = response.data;
+          const modalHtml = `
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit My Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="editForm">
+                      <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" value="${staff.name}" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="${staff.email}" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="phone" value="${staff.phone}" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="position" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="position" value="${staff.position}" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <input type="text" class="form-control" id="department" value="${staff.department}" required>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveOwnDetails('${staff._id}')">Save Changes</button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+
+          document.getElementById('modalContainer').innerHTML = modalHtml;
+          new bootstrap.Modal(document.getElementById('editModal')).show();
+        })
+        .catch(error => console.error('Error loading edit modal:', error));
+    }
+
+    // Function to save edited details
+    function saveOwnDetails(staffId) {
+      const form = document.getElementById('editForm');
+      const updatedData = {
+        name: form.name.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        position: form.position.value,
+        department: form.department.value
+      };
+
+      axios.put(`/api/staffs/${staffId}`, updatedData)
+        .then(() => {
+          loadStaffDetails(staffId); // Reload details
+          new bootstrap.Modal(document.getElementById('editModal')).hide();
+        })
+        .catch(error => console.error('Error saving staff details:', error));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Extract the staff ID from the URL path
+      const pathParts = window.location.pathname.split('/'); // Split by '/'
+      const staffId = pathParts[pathParts.length - 1]; // Get the last part of the path
+
+      if (staffId) {
+        loadStaffDetails(staffId); // Call your function with the extracted staff ID
+      } else {
+        console.error('No staff ID found in the URL path.');
+      }
+    });
+
+    // Load Data on Page Load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPatients();
+      loadDoctors();
+      loadAppointments();
+      loadRooms();
+    });
+
+    // Load Patients
+    function loadPatients() {
+      axios.get('/api/patients')
+        .then(response => populateTable('patientsTable', response.data, ['name', 'email', 'phone']))
+        .catch(error => console.error('Error loading patients:', error));
+    }
+
+    // Load Doctors
+    function loadDoctors() {
+      axios.get('/api/doctors')
+        .then(response => populateTable('doctorsTable', response.data, ['name', 'email', 'specialty']))
+        .catch(error => console.error('Error loading doctors:', error));
+    }
+
+    // Load Appointments
+    function loadAppointments() {
+      axios.get('/api/appointments')
+        .then(response => populateTable('appointmentsTable', response.data, ['patient.name', 'doctor.name', 'appointmentDate']))
+        .catch(error => console.error('Error loading appointments:', error));
+    }
+
+    // Load Rooms
+    function loadRooms() {
+      axios.get('/api/rooms')
+        .then(response => populateTable('roomsTable', response.data, ['number', 'type', 'price']))
+        .catch(error => console.error('Error loading rooms:', error));
+    }
+
+    // Helper Function to Populate Tables
+    function populateTable(tableId, data, fields) {
+      const tableBody = document.getElementById(tableId).querySelector('tbody');
+      tableBody.innerHTML = '';
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        fields.forEach(field => {
+          const td = document.createElement('td');
+          td.textContent = field.split('.').reduce((o, i) => (o ? o[i] : ''), item); // Support nested fields
+          row.appendChild(td);
+        });
+        const actionTd = document.createElement('td');
+        actionTd.innerHTML = `
+          <button class="btn btn-warning btn-sm" onclick="edit${capitalize(tableId)}('${item._id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="delete${capitalize(tableId)}('${item._id}')">Delete</button>
+        `;
+        row.appendChild(actionTd);
+        tableBody.appendChild(row);
+      });
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1, -5); // Removes 'Table' and capitalizes
+    }
+
+    // Placeholder Modal Functions
+
+// Open Patient Modal
+function openPatientModal() {
+  console.log("Open Patient Modal");
+  
+  // Check if modal is already open
+  if (document.getElementById('patientModal')) {
+    $('#patientModal').modal('show');
+    return;
+  }
+
+  // Create the modal structure dynamically
+  const patientModal = `
+    <div class="modal" id="patientModal" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="patientModalLabel">Add New Patient</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="patientForm">
+              <div class="form-group">
+                <label for="patientName">Patient Name</label>
+                <input type="text" class="form-control" id="patientName" required>
+              </div>
+              <div class="form-group">
+                <label for="patientAge">Age</label>
+                <input type="number" class="form-control" id="patientAge" required>
+              </div>
+              <div class="form-group">
+                <label for="patientGender">Gender</label>
+                <select class="form-control" id="patientGender" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="patientContact">Contact</label>
+                <input type="text" class="form-control" id="patientContact" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="postPatientData()">Save Patient</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', patientModal);
+
+  // Trigger modal after inserting HTML into the DOM
+  $('#patientModal').modal('show');
+}
+
+// Open Doctor Modal
+function openDoctorModal() {
+  console.log("Open Doctor Modal");
+  
+  // Check if modal is already open
+  if (document.getElementById('doctorModal')) {
+    $('#doctorModal').modal('show');
+    return;
+  }
+
+  const doctorModal = `
+    <div class="modal" id="doctorModal" tabindex="-1" role="dialog" aria-labelledby="doctorModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="doctorModalLabel">Add New Doctor</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="doctorForm">
+              <div class="form-group">
+                <label for="doctorName">Doctor Name</label>
+                <input type="text" class="form-control" id="doctorName" required>
+              </div>
+              <div class="form-group">
+                <label for="doctorSpecialization">Specialization</label>
+                <input type="text" class="form-control" id="doctorSpecialization" required>
+              </div>
+              <div class="form-group">
+                <label for="doctorContact">Contact</label>
+                <input type="text" class="form-control" id="doctorContact" required>
+              </div>
+              <div class="form-group">
+                <label for="doctorAvailability">Availability</label>
+                <input type="text" class="form-control" id="doctorAvailability" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="postDoctorData()">Save Doctor</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', doctorModal);
+  
+  // Trigger modal after inserting HTML into the DOM
+  $('#doctorModal').modal('show');
+}
+
+// Open Appointment Modal
+function openAppointmentModal() {
+  console.log("Open Appointment Modal");
+
+  if (document.getElementById('appointmentModal')) {
+    $('#appointmentModal').modal('show');
+    return;
+  }
+
+  const appointmentModal = `
+    <div class="modal" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="appointmentModalLabel">Create Appointment</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="appointmentForm">
+              <div class="form-group">
+                <label for="appointmentPatientId">Patient ID</label>
+                <input type="text" class="form-control" id="appointmentPatientId" required>
+              </div>
+              <div class="form-group">
+                <label for="appointmentDoctorId">Doctor ID</label>
+                <input type="text" class="form-control" id="appointmentDoctorId" required>
+              </div>
+              <div class="form-group">
+                <label for="appointmentDate">Date</label>
+                <input type="date" class="form-control" id="appointmentDate" required>
+              </div>
+              <div class="form-group">
+                <label for="appointmentReason">Reason</label>
+                <textarea class="form-control" id="appointmentReason" required></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="postAppointmentData()">Save Appointment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', appointmentModal);
+  
+  // Trigger modal after inserting HTML into the DOM
+  $('#appointmentModal').modal('show');
+}
+
+// Open Room Modal
+function openRoomModal() {
+  console.log("Open Room Modal");
+
+  if (document.getElementById('roomModal')) {
+    $('#roomModal').modal('show');
+    return;
+  }
+
+  const roomModal = `
+    <div class="modal" id="roomModal" tabindex="-1" role="dialog" aria-labelledby="roomModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="roomModalLabel">Add New Room</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="roomForm">
+              <div class="form-group">
+                <label for="roomNumber">Room Number</label>
+                <input type="text" class="form-control" id="roomNumber" required>
+              </div>
+              <div class="form-group">
+                <label for="roomType">Room Type</label>
+                <input type="text" class="form-control" id="roomType" required>
+              </div>
+              <div class="form-group">
+                <label for="roomAvailability">Availability</label>
+                <input type="text" class="form-control" id="roomAvailability" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="postRoomData()">Save Room</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', roomModal);
+  
+  // Trigger modal after inserting HTML into the DOM
+  $('#roomModal').modal('show');
+}
+
+// Post Patient Data
+async function postPatientData() {
+  const patientData = {
+    name: document.getElementById('patientName').value,
+    age: document.getElementById('patientAge').value,
+    gender: document.getElementById('patientGender').value,
+    contact: document.getElementById('patientContact').value
+  };
+
+  await postDataToDB('patient', patientData);
+}
+
+// Post Doctor Data
+async function postDoctorData() {
+  const doctorData = {
+    name: document.getElementById('doctorName').value,
+    specialization: document.getElementById('doctorSpecialization').value,
+    contact: document.getElementById('doctorContact').value,
+    availability: document.getElementById('doctorAvailability').value
+  };
+
+  await postDataToDB('doctor', doctorData);
+}
+
+// Post Appointment Data
+async function postAppointmentData() {
+  const appointmentData = {
+    patientId: document.getElementById('appointmentPatientId').value,
+    doctorId: document.getElementById('appointmentDoctorId').value,
+    date: document.getElementById('appointmentDate').value,
+    reason: document.getElementById('appointmentReason').value
+  };
+
+  await postDataToDB('appointment', appointmentData);
+}
+
+// Post Room Data
+async function postRoomData() {
+  const roomData = {
+    number: document.getElementById('roomNumber').value,
+    type: document.getElementById('roomType').value,
+    availability: document.getElementById('roomAvailability').value
+  };
+
+  await postDataToDB('room', roomData);
+}
+
+// General Function to Post Data to DB
+async function postDataToDB(endpoint, data) {
+  try {
+    const response = await fetch(`/api/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (response.ok) {
+      alert(`${endpoint} saved successfully!`);
+      $('#'+endpoint+'Modal').modal('hide'); // Close the modal
+    } else {
+      alert('Error saving data.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error saving data.');
+  }
+}
+
+
+
+    // Generalized Edit Function
+    function editRecord(apiEndpoint, itemId, tableId, fields) {
+      axios.get(`${apiEndpoint}/${itemId}`)
+        .then(response => {
+          const data = response.data;
+          // Create and show modal for editing
+          const modalHtml = `
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Record</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="editForm">
+                      ${fields.map(field => `
+                        <div class="mb-3">
+                          <label for="${field}" class="form-label">${capitalize(field)}</label>
+                          <input type="text" class="form-control" id="${field}" value="${data[field] || ''}" required>
+                        </div>
+                      `).join('')}
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEdit('${apiEndpoint}', '${itemId}', '${tableId}')">Save Changes</button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+
+          document.getElementById('modalContainer').innerHTML = modalHtml;
+          new bootstrap.Modal(document.getElementById('editModal')).show();
+        })
+        .catch(error => console.error('Error fetching record for edit:', error));
+    }
+
+    // Save Edit Function
+    function saveEdit(apiEndpoint, itemId, tableId) {
+      const form = document.getElementById('editForm');
+      const updatedData = {};
+
+      Array.from(form.elements).forEach(input => {
+        if (input.id) {
+          updatedData[input.id] = input.value;
+        }
+      });
+
+      axios.put(`${apiEndpoint}/${itemId}`, updatedData)
+        .then(() => {
+          loadTableData(tableId);
+          new bootstrap.Modal(document.getElementById('editModal')).hide();
+        })
+        .catch(error => console.error('Error saving edited record:', error));
+    }
+
+    // Generalized Delete Function
+    function deleteRecord(apiEndpoint, itemId, tableId) {
+      if (confirm('Are you sure you want to delete this record?')) {
+        axios.delete(`${apiEndpoint}/${itemId}`)
+          .then(() => loadTableData(tableId))
+          .catch(error => console.error('Error deleting record:', error));
+      }
+    }
+
+    // Helper to reload table data
+    function loadTableData(tableId) {
+      switch (tableId) {
+        case 'patientsTable': loadPatients(); break;
+        case 'doctorsTable': loadDoctors(); break;
+        case 'appointmentsTable': loadAppointments(); break;
+        case 'roomsTable': loadRooms(); break;
+        default: console.error('Unknown table:', tableId);
+      }
+    }
+
+    // Utility: Capitalize Field Name
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // Attach Edit/Delete for Each Table
+    function editPatientsTable(id) { editRecord('/api/patients', id, 'patientsTable', ['name', 'email', 'phone', 'address']); }
+    function deletePatientsTable(id) { deleteRecord('/api/patients', id, 'patientsTable'); }
+
+    function editDoctorsTable(id) { editRecord('/api/doctors', id, 'doctorsTable', ['name', 'email', 'specialty', 'phone']); }
+    function deleteDoctorsTable(id) { deleteRecord('/api/doctors', id, 'doctorsTable'); }
+
+    function editAppointmentsTable(id) { editRecord('/api/appointments', id, 'appointmentsTable', ['appointmentDate', 'diagnosis']); }
+    function deleteAppointmentsTable(id) { deleteRecord('/api/appointments', id, 'appointmentsTable'); }
+
+    function editRoomsTable(id) { editRecord('/api/rooms', id, 'roomsTable', ['number', 'type', 'price']); }
+    function deleteRoomsTable(id) { deleteRecord('/api/rooms', id, 'roomsTable'); }
+    console.log(window.bootstrap);
+  </script>
+
+</body>
+</html>
